@@ -131,7 +131,6 @@ console.log(fileExists); // 输出：true
 假设你有一个 Excel 文件 data.xlsx，你希望使用这些工具函数解析文件并获取其内容。以下是一个完整的解析流程：
 
 ```ts
-复制代码
 import * as JSZip from 'jszip';
 import { read } from 'your-excel-parser-library';
 
