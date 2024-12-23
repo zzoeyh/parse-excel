@@ -1,22 +1,36 @@
 {
-  "name": "@turtle/parse-excel",
+  "name": "@turtlegi/parse-excel",
   "version": "1.0.0",
   "main": "lib/bundle.cjs.js",
   "module": "lib/bundle.esm.js",
   "browser": "lib/bundle.browser.js",
   "types": "types/index.d.ts",
   "type": "module",
+  "files": [
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "import": "./lib/bundle.esm.js",
+      "require": "./lib/bundle.cjs.js"
+    },
+    "./browser": {
+      "browser": "./lib/bundle.browser.js"
+    }
+  },
   "scripts": {
     "build": "rollup -c",
     "build:types": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "publish": "npm publish"
   },
-  "author": "",
+  "author": "zzoeyh",
   "license": "ISC",
   "description": "a tool to parse excel file",
   "keywords": [
     "excel",
-    "xlsx"
+    "xlsx",
+    "parse-excel"
   ],
   "devDependencies": {
     "@eslint/js": "^9.17.0",

@@ -15,7 +15,6 @@ describe('parse', () => {
       header: 1,
       defval: '', // 避免undefined填充
     });
-    console.log(sheetjsData)
     // 使用我们的read函数读取同一个文件
     const namespaceURI = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'; // Excel文件的默认namespace
     const ourData = await read(fileBuffer, namespaceURI);
