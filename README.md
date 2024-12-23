@@ -1,5 +1,13 @@
 # **Excel 文件解析工具**
 
+## 开发背景
+
+部分商业软件由于开发语言以及调用库的原因，导出的 excel 无法被目前成熟的解析库解析。
+这类 excel 与正常解析的 excel 文件差异表现在解压缩后的 sharedString.xml 标签多了前缀 x:,且 xml 文件内的样式表现形式也不太一致。
+为了解决将 xlsx 文件解析成 json 的问题，基于 xlsx 本质是压缩包的特性对其解压缩，并对 xlsx 不同的文件结构做兼容，再通过 xml 文件中的标签数据进行匹配，解析出对应的 json 数据。
+
+## 简介
+
 本工具库提供了多种函数，能够帮助你解析 Excel 文件（.xlsx）中的内容，并将其转换为更易于操作的数据格式。工具的核心功能包括从 .xlsx 文件中提取工作表数据、解析共享字符串、将数据转换为二维数组格式等。
 
 ## 1. 安装和配置
@@ -21,6 +29,7 @@ npm install @turtlegi/parse-excel
 **功能**：解析 Excel 工作簿中的共享字符串 XML 文件，返回一个包含所有共享字符串的数组。
 
 **参数**：
+
 - `xml` (string)：共享字符串的 XML 数据。
 - `namespaceURI` (string)：XML 文件的命名空间 URI，通常为 `http://schemas.openxmlformats.org/spreadsheetml/2006/main`。
 
@@ -30,13 +39,14 @@ npm install @turtlegi/parse-excel
 **示例**：
 
 ```ts
-import { parseSharedStrings } from '@turtlegi/parse-excel';
+import { parseSharedStrings } from "@turtlegi/parse-excel";
 
-const sharedStringsXml = '<xml>...</xml>';  // 共享字符串的 XML 数据
-const namespaceURI = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+const sharedStringsXml = "<xml>...</xml>"; // 共享字符串的 XML 数据
+const namespaceURI =
+  "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
 
 const sharedStrings = parseSharedStrings(sharedStringsXml, namespaceURI);
-console.log(sharedStrings);  // 输出：['Hello', 'World']
+console.log(sharedStrings); // 输出：['Hello', 'World']
 ```
 
 ### 3.2 `parseWorksheet`
@@ -44,6 +54,7 @@ console.log(sharedStrings);  // 输出：['Hello', 'World']
 **功能**：解析一个 Excel 工作表 XML 文件，返回每一行的单元格数据。每个单元格的值被存储为一个键值对，其中键为单元格引用（如 "A1"），值为单元格的值。
 
 **参数**：
+
 - `xml` (string)：工作表的 XML 数据。
 - `sharedStrings` (string[])：解析出的共享字符串数组（如果有）。
 - `namespaceURI` (string)：XML 文件的命名空间 URI。
@@ -54,11 +65,12 @@ console.log(sharedStrings);  // 输出：['Hello', 'World']
 **示例**：
 
 ```ts
-import { parseWorksheet } from '@turtlegi/parse-excel';
+import { parseWorksheet } from "@turtlegi/parse-excel";
 
-const worksheetXml = '<xml>...</xml>';  // 工作表的 XML 数据
-const sharedStrings = ['Hello', 'World'];  // 共享字符串
-const namespaceURI = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+const worksheetXml = "<xml>...</xml>"; // 工作表的 XML 数据
+const sharedStrings = ["Hello", "World"]; // 共享字符串
+const namespaceURI =
+  "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
 
 const worksheetData = parseWorksheet(worksheetXml, sharedStrings, namespaceURI);
 console.log(worksheetData);
@@ -70,7 +82,7 @@ console.log(worksheetData);
 //   { A3: 'Bob', B3: '25' }
 // ]
 // key: 字母代表Excel中的列，数字则代表行
-// value: 对应单元格的内容 
+// value: 对应单元格的内容
 ```
 
 ### 3.3 `convertTo2DArray`
@@ -78,6 +90,7 @@ console.log(worksheetData);
 **功能**：将解析后的工作表数据转换为一个二维数组。这个函数确保每一行的列数一致，填充缺少的列数据为一个空字符串 `""`。
 
 **参数**：
+
 - `worksheetData` (Array<{[key: string]: any}>)：一个包含工作表数据的数组，数组中的每个元素表示一行数据（通常为对象形式，其中键是列引用，值是单元格的值）。
 
 **返回值**：
@@ -86,12 +99,12 @@ console.log(worksheetData);
 **示例**：
 
 ```ts
-import { convertTo2DArray } from '@turtlegi/parse-excel';
+import { convertTo2DArray } from "@turtlegi/parse-excel";
 
 const worksheetData = [
-  { A: 'Name', B: 'Age' },
-  { A: 'Alice', B: 30 },
-  { A: 'Bob' }
+  { A: "Name", B: "Age" },
+  { A: "Alice", B: 30 },
+  { A: "Bob" },
 ];
 
 const twoDArray = convertTo2DArray(worksheetData);
@@ -110,6 +123,7 @@ console.log(twoDArray);
 **功能**：从一个 ZIP 文件中提取指定路径的文件内容。
 
 **参数**：
+
 - `zipDataFiles` (Object)：解压后的 ZIP 文件内容对象，通常是通过 JSZip 解压 .xlsx 文件得到的。
 - `path` (string)：文件路径，例如 "xl/worksheets/sheet1.xml"。
 
@@ -119,13 +133,15 @@ console.log(twoDArray);
 **示例**：
 
 ```ts
-import { extractFileFromZip } from '@turtlegi/parse-excel';
+import { extractFileFromZip } from "@turtlegi/parse-excel";
 
-const zipDataFiles = { 'xl/worksheets/sheet1.xml': { async: () => 'xml content' } };
-const path = 'xl/worksheets/sheet1.xml';
+const zipDataFiles = {
+  "xl/worksheets/sheet1.xml": { async: () => "xml content" },
+};
+const path = "xl/worksheets/sheet1.xml";
 
 extractFileFromZip(zipDataFiles, path).then((content) => {
-  console.log(content);  // 输出：'xml content'
+  console.log(content); // 输出：'xml content'
 });
 ```
 
@@ -134,6 +150,7 @@ extractFileFromZip(zipDataFiles, path).then((content) => {
 **功能**：检查指定路径的文件是否存在于 ZIP 文件中。
 
 **参数**：
+
 - `zipDataFiles` (Object)：解压后的 ZIP 文件内容对象。
 - `path` (string)：文件路径。
 
@@ -143,13 +160,15 @@ extractFileFromZip(zipDataFiles, path).then((content) => {
 **示例**：
 
 ```ts
-import { checkFileExistInZip } from '@turtlegi/parse-excel';
+import { checkFileExistInZip } from "@turtlegi/parse-excel";
 
-const zipDataFiles = { 'xl/worksheets/sheet1.xml': { async: () => 'xml content' } };
-const path = 'xl/worksheets/sheet1.xml';
+const zipDataFiles = {
+  "xl/worksheets/sheet1.xml": { async: () => "xml content" },
+};
+const path = "xl/worksheets/sheet1.xml";
 
 const fileExists = checkFileExistInZip(zipDataFiles, path);
-console.log(fileExists);  // 输出：true
+console.log(fileExists); // 输出：true
 ```
 
 ## 4. 整体解析拆解
@@ -157,8 +176,8 @@ console.log(fileExists);  // 输出：true
 假设你有一个 Excel 文件 `data.xlsx`，你希望使用这些工具函数解析文件并获取其内容。以下是一个完整的解析流程：
 
 ```ts
-import * as JSZip from 'jszip';
-import { read } from '@turtlegi/parse-excel';
+import * as JSZip from "jszip";
+import { read } from "@turtlegi/parse-excel";
 
 // 假设你已经加载了一个 Blob 或 ArrayBuffer 格式的文件
 async function parseExcelFile(file: Blob | ArrayBuffer) {
@@ -166,27 +185,43 @@ async function parseExcelFile(file: Blob | ArrayBuffer) {
   const zipData = await zip.loadAsync(file);
   const { files: zipDataFiles } = zipData;
 
-  const sheet1Xml = await extractFileFromZip(zipDataFiles, 'xl/worksheets/sheet1.xml');
-  const sharedStringsXml = await extractFileFromZip(zipDataFiles, 'xl/sharedStrings.xml');
+  const sheet1Xml = await extractFileFromZip(
+    zipDataFiles,
+    "xl/worksheets/sheet1.xml"
+  );
+  const sharedStringsXml = await extractFileFromZip(
+    zipDataFiles,
+    "xl/sharedStrings.xml"
+  );
 
-  const sharedStrings = sharedStringsXml ? parseSharedStrings(sharedStringsXml, 'http://schemas.openxmlformats.org/spreadsheetml/2006/main') : [];
-  const worksheetData = parseWorksheet(sheet1Xml, sharedStrings, 'http://schemas.openxmlformats.org/spreadsheetml/2006/main');
+  const sharedStrings = sharedStringsXml
+    ? parseSharedStrings(
+        sharedStringsXml,
+        "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+      )
+    : [];
+  const worksheetData = parseWorksheet(
+    sheet1Xml,
+    sharedStrings,
+    "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+  );
 
   const twoDArray = convertTo2DArray(worksheetData);
-  console.log(twoDArray);  // 输出二维数组，格式化后的工作表数据
+  console.log(twoDArray); // 输出二维数组，格式化后的工作表数据
 }
 ```
 
 ## 5. 调用示例
 
 ```ts
-import { read } from '@turtlegi/parse-excel';
-import fs from 'fs';
-import path from 'path';
+import { read } from "@turtlegi/parse-excel";
+import fs from "fs";
+import path from "path";
 
-const filePath = path.resolve(__dirname, './data.xlsx');  // 本地 Excel 文件的路径
-const fileBuffer = fs.readFileSync(filePath);  // 使用 fs.readFileSync 读取文件内容为 Buffer
-const namespaceURI = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';  // Excel 文件的默认 namespace
+const filePath = path.resolve(__dirname, "./data.xlsx"); // 本地 Excel 文件的路径
+const fileBuffer = fs.readFileSync(filePath); // 使用 fs.readFileSync 读取文件内容为 Buffer
+const namespaceURI =
+  "http://schemas.openxmlformats.org/spreadsheetml/2006/main"; // Excel 文件的默认 namespace
 
 // 使用我们的 read 函数读取同一个文件
 const ourData = await read(fileBuffer, namespaceURI);

@@ -2,7 +2,7 @@ import * as fs from 'fs'; // 引入Node.js的文件系统模块
 import * as path from 'path'; // 用于处理文件路径
 import * as XLSX from 'xlsx'; // 引入SheetJS
 import { read } from '../src/index'; // 我们编写的函数
-
+// 使用成熟的解析库sheetjs读取Excel文件并转为JSON，然后比较我们的函数的输出，确保我们函数解析的正确性
 describe('parse', () => {
   test('读取excel文件并确保与SheetJS输出一致', async () => {
     // 读取本地文件
