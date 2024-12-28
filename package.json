@@ -1,6 +1,6 @@
 {
   "name": "@turtlegi/parse-excel",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "lib/bundle.cjs.js",
   "module": "lib/bundle.esm.js",
   "browser": "lib/bundle.browser.js",
